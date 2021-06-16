@@ -1,6 +1,5 @@
 from matplotlib import pyplot as plt
 import numpy as np
-import numpy.polynomial.polynomial as poly
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
@@ -81,11 +80,22 @@ plt.scatter(X, Y, label="Actual Data")
 
 # plot the LR model data
 plt.scatter(X, LR_predictor, color="red", label="LR Prediction")
-# plt.plot(X, LR_predictor, "r--")
+plt.plot(X, LR_predictor, color="red")
 
 # plot the SVR model data
-# plt.scatter(sc_X1.inverse_transform(X_test), sc_Y1, color="black")
-plt.scatter(sc_X1.inverse_transform(X_test), Y_pred, color="black", label="SVR Prediction")
+# in order to plot predicted data (with a line) we need to transform and sort the values
+# this function transforms the sc_X vector array into an array so we can plot it
+sc_XX = sc_X1.inverse_transform(X_test.reshape(-1))
+print(sc_XX)
+# sorted sc_XX values - USE THIS WHEN PLOTTING
+sorted_sc_XX = sorted(sc_XX)
+print(sorted_sc_XX)
+# sorted Y_pred values - USE THIS WHEN PLOTTING
+sorted_Y_pred = sorted(Y_pred)
+print(sorted_Y_pred)
+# finally, we can plot the predicted values via scatter and line plots
+plt.scatter(sorted_sc_XX, sorted_Y_pred, color="black", label="SVR Prediction")
+plt.plot(sorted_sc_XX, sorted_Y_pred, color="black")
 
 # nice labels
 plt.xlabel("Fiber Content")
@@ -128,6 +138,7 @@ SVR_rmse = np.sqrt(SVR_mse)
 print("SVR RMSE = ", SVR_rmse)
 # calculating R^2
 SVR_Y_mean = np.mean(Y)
+print(Y)
 SVR_SSt = np.sum((Y - SVR_Y_mean)**2)
 SVR_R2 = 1 - (SVR_se/SVR_SSt)
 print("SVR R^2 = ", SVR_R2)
