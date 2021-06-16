@@ -13,6 +13,8 @@ X = data.iloc[:, 0].values
 print(X.shape)
 # second column is tensile strength so it is Y - the predicted
 y = data.iloc[:, 1].values
+# z is the y that we'll use for stats at the end (otherwise, y is transformed for the model
+z = data.iloc[:, 1].values
 print(y.shape)
 # reshape y to a column vector
 y = np.array(y).reshape(-1, 1)
@@ -55,14 +57,27 @@ df = pd.DataFrame({"Real Values": sc_y, "Predicted Values": y_pred})
 print(sc_y)
 print(df)
 
-# plotting (green points are the predicted values, black points are actual values)
+# plotting the actual data and predicted data
 X_grid = np.arange(min(X), max(X), 0.1)
 X_grid = X_grid.reshape((len(X_grid), 1))
-plt.scatter(sc_X.inverse_transform(X_test), sc_y, color="black")
-plt.scatter(sc_X.inverse_transform(X_test), y_pred, color="green")
+plt.scatter(sc_X.inverse_transform(X_test), sc_y, color="blue", label="Actual Data")
+# in order to plot predicted data (with a line) we need to transform and sort the values
+# this function transforms the sc_X vector array into an array so we can plot it
+sc_XX = sc_X.inverse_transform(X_test.reshape(-1))
+print(sc_XX)
+# sorted sc_XX values - USE THIS WHEN PLOTTING
+sorted_sc_XX = sorted(sc_XX)
+print(sorted_sc_XX)
+# sorted y_pred values - USE THIS WHEN PLOTTING
+sorted_y_pred = sorted(y_pred)
+print(sorted_y_pred)
+# finally, we can plot the predicted values via scatter and line plots
+plt.scatter(sorted_sc_XX, sorted_y_pred, color="black", label="Predicted Data")
+plt.plot(sorted_sc_XX, sorted_y_pred, color="black")
 plt.xlabel("Fiber Content")
 plt.ylabel("Tensile Strength (MPa)")
 plt.title("AI Model: Support Vector Regression (SVR)")
+plt.legend()
 plt.show()
 
 # stats work
@@ -78,7 +93,8 @@ print("Mean Squared Error = ", mse)
 rmse = np.sqrt(mse)
 print("Root Mean Square Error = ", rmse)
 # calculating R^2
-y_mean = np.mean(y)
-SSt = np.sum((y - y_mean)**2)
+z_mean = np.mean(z)
+print(z)
+SSt = np.sum((z - z_mean)**2)
 R2 = 1 - (se/SSt)
 print("R^2 = ", R2)
