@@ -7,7 +7,7 @@ from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 
 # reading in data into python
-data = pd.read_csv("glen_data.csv")
+data = pd.read_csv("material_data.csv")
 # want to predict the tensile strength based on fiber content
 # first column is tensile strength so it is Y - the predicted
 X = data.iloc[:, 0].values.reshape(-1, 1)
